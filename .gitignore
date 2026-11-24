@@ -1,0 +1,7 @@
+# служебные файлы Claude Code и редакторов — на сайт не нужны
+.claude/
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
