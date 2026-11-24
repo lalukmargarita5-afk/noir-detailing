@@ -1004,9 +1004,20 @@ function goTo(to, opt = {}) {
   const from = state; lock = true; state = to; setUI(to);
   if (to === 3) preselect(opt.book);
   if (RM) {
-    stage.dataset.s = String(to);
-    if (to === 2) highlight(opt.svc, 0);
-    lock = false; return;
+    // «Уменьшение движения» на телефоне: без полётов и наездов, но с мягким растворением слайдов
+    const els = k => k === 0 ? [$('.h1'), fg] : SEC[k]().map(x => x[0]);
+    const outEls = els(from), inEls = els(to), anims = [];
+    const fade = (el, a, b, o) => { if (el) anims.push(el.animate([{ opacity: a }, { opacity: b }], Object.assign({ fill: 'both', easing: 'ease' }, o))); };
+    outEls.forEach(el => fade(el, 1, 0, { duration: 260 }));
+    fade(PLATES[from], 1, 0, { duration: 520 });
+    fade(PLATES[to], 0, 1, { duration: 520, delay: 80 });
+    setTimeout(() => {
+      stage.dataset.s = String(to);
+      inEls.forEach((el, i) => fade(el, 0, 1, { duration: 420, delay: Math.min(i, 6) * 40 }));
+      if (to === 2) highlight(opt.svc, 300);
+    }, 270);
+    setTimeout(() => { anims.forEach(a => a.cancel()); lock = false; }, 1000);
+    return;
   }
   settle();
   const dir = to > from ? 1 : -1;
@@ -1224,6 +1235,7 @@ function start() {
   fitWord();
   if (RM) {
     stage.classList.add('rm'); stage.classList.remove('pre'); lock = false;
+    stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: 'ease-out' });   // мягкое появление вместо интро
     const g = +qs.get('go'); if (g) goTo(g);
     if (qs.get('ba') && BA[qs.get('ba')]) openBA(qs.get('ba'));
     return;
