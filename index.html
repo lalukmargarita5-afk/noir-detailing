@@ -120,9 +120,6 @@ ul{list-style:none}
   mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 94%,transparent 100%),linear-gradient(180deg,transparent 0,#000 8%,#000 72%,transparent 100%);
   mask-composite:intersect;
 }
-.plate-sv .fluid{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.8}
-.plate-sv::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 60% at 72% 0%,rgba(255,255,255,.07),rgba(255,255,255,0) 70%),linear-gradient(90deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 40%)}
 .plate-sv{background:radial-gradient(ellipse 70% 60% at 72% 0%,rgba(255,255,255,.09),rgba(255,255,255,0) 70%),radial-gradient(ellipse 50% 40% at 0% 100%,rgba(255,255,255,.05),rgba(255,255,255,0) 70%),#0a0a0a}
 .plate-bk{background:#050505}
 .plate-bk img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;filter:grayscale(1) contrast(1.1) brightness(.75)}
@@ -174,11 +171,36 @@ ul{list-style:none}
 .of{position:absolute;left:0;top:0;width:0;height:0;border-radius:50%;background:var(--light);pointer-events:none;z-index:0;
   transform:translate(-50%,-50%) scale(0);transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .is-fill>.of{transform:translate(-50%,-50%) scale(1)}
-.menu{width:max(28px,calc(32 * var(--u)));height:max(28px,calc(24 * var(--u)));display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:max(6px,calc(9 * var(--u)))}
-.menu i{display:block;height:1.5px;background:var(--light);width:100%;transition:width .5s var(--ease-out)}
-.menu i:last-child{width:62%}
+.menu{position:relative;flex:none;width:max(28px,calc(32 * var(--u)));height:max(28px,calc(24 * var(--u)))}
+.menu i{position:absolute;right:0;height:1.5px;background:var(--light);width:100%;transition:width .5s var(--ease-out),transform .5s var(--ease-out),top .5s var(--ease-out)}
+.menu i:first-child{top:calc(50% - 5px)}
+.menu i:last-child{top:calc(50% + 4px);width:62%}
 .menu:hover i:first-child{width:62%}
 .menu:hover i:last-child{width:100%}
+.menu-open .menu i,.menu-open .menu:hover i{top:calc(50% - .75px);width:100%}
+.menu-open .menu i:first-child{transform:rotate(45deg)}
+.menu-open .menu i:last-child{transform:rotate(-45deg)}
+/* полноэкранное меню */
+.menu-open .nav{z-index:7}
+.menu-open .nav-links{opacity:0;pointer-events:none}
+.mnav{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;justify-content:space-between;
+  padding:calc(130 * var(--u)) calc(74 * var(--u)) calc(56 * var(--u));background:rgba(8,8,8,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;transition:opacity .45s var(--ease-out),visibility 0s .45s}
+.menu-open .mnav{opacity:1;visibility:visible;transition:opacity .45s var(--ease-out)}
+.mnav-links{display:grid;gap:calc(14 * var(--u))}
+.mnav-links a{display:inline-flex;align-items:baseline;gap:18px;font-family:var(--font-d);font-weight:400;font-size:clamp(26px,calc(54 * var(--u)),64px);line-height:1.1;
+  text-transform:uppercase;letter-spacing:-.01em;opacity:0;transform:translateY(26px);transition:opacity .5s,transform .8s var(--ease-out),color .3s}
+.mnav-links a span{font-family:var(--font-b);font-size:12px;letter-spacing:.14em;color:rgba(241,241,239,.4);transform:translateY(-.9em)}
+.mnav-links a:hover,.mnav-links a.on{color:var(--soft)}
+.menu-open .mnav-links a{opacity:1;transform:none}
+.menu-open .mnav-links li:nth-child(2) a{transition-delay:.06s}
+.menu-open .mnav-links li:nth-child(3) a{transition-delay:.12s}
+.menu-open .mnav-links li:nth-child(4) a{transition-delay:.18s}
+.mnav-foot{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 48px;padding-top:24px;border-top:1px solid rgba(241,241,239,.12);opacity:0;transition:opacity .5s .2s}
+.menu-open .mnav-foot{opacity:1}
+.mnav-foot .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(241,241,239,.5);margin-bottom:6px}
+.mnav-foot .v{font-family:var(--font-d);font-weight:400;font-size:max(15px,calc(18 * var(--u)))}
+.mnav-foot .soc{display:flex;gap:20px}
 
 /* ============ ГЛИФЫ ============ */
 .glyphs{position:absolute;z-index:4;left:calc(32 * var(--u));top:calc(211 * var(--u));display:flex;flex-direction:column;gap:calc(15 * var(--u))}
@@ -410,6 +432,7 @@ ul{list-style:none}
 .pre .nav>*,.pre .nav-links .nl,.pre .glyphs,.pre .pager,.pre .h1,.pre .fg{opacity:0}
 .pre .plate-h1 .zoom{transform:scale(1.3)}
 .stage:not([data-s="0"]) .h1{opacity:0;pointer-events:none}
+.stage:not([data-s="0"]) .fg{visibility:hidden}
 .stage:not([data-s="0"]) .h1>*{pointer-events:none}
 .rm:not([data-s="0"]) .fg,.rm:not([data-s="0"]) .plate-h1{opacity:0}
 .rm[data-s="1"] .plate-s2,.rm[data-s="2"] .plate-sv,.rm[data-s="3"] .plate-bk{opacity:1}
@@ -417,10 +440,10 @@ ul{list-style:none}
 /* ============ ТЕЛЕФОНЫ / ПОРТРЕТ ============ */
 @media (max-width:820px),(max-aspect-ratio:1/1){
   :root{--u:calc(100vw / 390);--s:calc(100vw / 1440);--mb:96px;--hw:118vw;--cy:52vh;--s2w:140vw;--s2l:-20vw;--s2t:46vh}
-  .nav{height:auto;padding:16px 18px 0;flex-wrap:wrap;align-items:center}
+  .nav{height:auto;padding:14px 18px 0;flex-wrap:nowrap;align-items:center}
   .logo svg{width:42px}
   .logo .wm{display:none}
-  .nav-links{position:static;transform:none;order:3;width:100%;justify-content:space-between;gap:8px;margin-top:4px}
+  .nav-links{display:none}
   .nl{font-size:11px;letter-spacing:.03em}
   .nav-r{gap:14px}
   .cta{height:34px;padding:0 14px;font-size:11px}
@@ -432,7 +455,12 @@ ul{list-style:none}
   .h1 p{left:18px;width:min(300px,60vw);font-size:12.5px}
   .vcard{left:auto;right:18px;width:min(120px,26vw);height:min(84px,18vw)}
   .vcard .lbl{display:none}
-  .glyphs{flex-direction:row;left:18px;top:94px;gap:12px}
+  .glyphs{display:none}
+  .mnav{padding:110px 18px 28px}
+  .mnav-links{gap:14px}
+  .mnav-links a{font-size:min(30px,7.6vw);gap:14px}
+  .mnav-foot{gap:16px 28px}
+  .mnav-foot .soc{width:100%}
   .g svg{width:13px}
   .g::after{display:none}
   .caps{left:18px;right:18px;bottom:16px;height:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -444,16 +472,18 @@ ul{list-style:none}
   .sec h2{left:18px;top:118px;font-size:min(24px,6vw);line-height:1.28}
   .sec .lead{left:18px;top:calc(118px + 3 * 1.28 * min(24px,6vw) + 16px);width:min(330px,calc(100vw - 36px));font-size:12.5px}
   .cards{left:18px;right:18px;top:auto;bottom:20px;gap:8px}
-  .card{width:calc((100vw - 52px) / 3);height:calc((100vw - 52px) / 3 * 246 / 216)}
+  .card{width:calc((100vw - 52px) / 3);height:calc((100vw - 52px) / 3 * 1.5)}
   .card .lb{font-size:11px}
   .card .sub,.card .more{display:none}
   .card .meta{left:10px;right:8px;bottom:10px}
   .card .tg{display:none}
-  .arrow{left:18px;top:auto;bottom:calc(20px + (100vw - 52px) / 3 * 246 / 216 + 14px)}
+  .arrow{left:18px;top:auto;bottom:calc(20px + (100vw - 52px) / 3 * 1.5 + 14px)}
+  .card .lb{font-size:12px}
   /* услуги */
   .sec-2 .lead,.sv-note{display:none}
   .sv-cta{left:auto;right:18px;top:auto;bottom:20px}
-  .svc-grid{left:18px;right:18px;top:190px;grid-template-columns:1fr 1fr;gap:8px}
+  .dbr{display:none}
+  .svc-grid{left:18px;right:18px;top:166px;grid-template-columns:1fr 1fr;gap:8px}
   .svc{height:auto}
   .svc .ph{height:min(84px,22vw)}
   .svc .bd{padding:8px 10px 10px}
@@ -469,10 +499,11 @@ ul{list-style:none}
   .chips{grid-template-columns:1fr 1fr;gap:6px}
   .chip{min-height:38px;padding:0 10px;gap:8px}
   .chip em{display:none}
-  .fields{grid-template-columns:1fr;gap:10px;margin-top:14px}
+  .fields{grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:14px}
+  .fields .f:nth-child(-n+2){grid-column:1 / -1}
   .f input{height:34px}
   .sum{margin-top:14px}
-  .bk-contacts{left:18px;right:18px;top:auto;bottom:16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+  .bk-contacts{left:18px;right:18px;top:auto;bottom:14px;display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center;padding-top:10px;border-top:1px solid rgba(241,241,239,.1)}
   .bk-contacts .k{display:none}
   .bk-contacts .v{font-size:13px}
   .bk-contacts .soc{margin:0}
@@ -480,7 +511,8 @@ ul{list-style:none}
 /* невысокие телефоны (iPhone SE и т.п.) */
 @media (max-width:599px) and (max-height:740px){
   .svc .ph{height:60px}
-  .sv-cta,.bk-contacts,.consent{display:none}
+  .sv-cta,.consent{display:none}
+  .bk-contacts .v{font-size:12.5px}
   .form{top:178px;padding:14px}
   .chip{min-height:34px}
   .fields{gap:6px;margin-top:10px}
@@ -554,7 +586,7 @@ ul{list-style:none}
       src="assets/img/hero.jpg">
   </div></div>
   <div class="plate plate-s2"><img alt="" decoding="async" src="assets/img/studio.jpg"></div>
-  <div class="plate plate-sv"><canvas class="fluid" aria-hidden="true"></canvas></div>
+  <div class="plate plate-sv"></div>
   <div class="plate plate-bk"><img alt="" decoding="async" loading="lazy" src="assets/img/booking.jpg"></div>
   <!-- слот видео облёта камеры (герой ↔ слайд 2), работает с ?cam=URL -->
   <canvas class="cam" width="1280" height="720"></canvas>
@@ -605,7 +637,7 @@ ul{list-style:none}
     <div class="nav-r">
       <a class="cta" href="#" data-go="3"><span>Записаться</span>
         <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 6h10M7 2l4 4-4 4"/></svg></a>
-      <button class="menu" aria-label="Меню" data-go="2"><i></i><i></i></button>
+      <button class="menu" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><i></i><i></i></button>
     </div>
   </header>
 
@@ -625,6 +657,21 @@ ul{list-style:none}
     <button data-go="2" aria-label="Услуги">03</button>
     <button data-go="3" aria-label="Запись">04</button>
   </div>
+
+  <!-- полноэкранное меню (бургер) -->
+  <nav class="mnav" id="mnav" aria-label="Меню" aria-hidden="true">
+    <ul class="mnav-links">
+      <li><a href="#" data-go="0"><span>01</span>Главная</a></li>
+      <li><a href="#" data-go="1"><span>02</span>О студии</a></li>
+      <li><a href="#" data-go="2"><span>03</span>Услуги и цены</a></li>
+      <li><a href="#" data-go="3"><span>04</span>Запись</a></li>
+    </ul>
+    <div class="mnav-foot">
+      <div><div class="k">Город</div><div class="v">Симферополь</div></div>
+      <div><div class="k">Телефон</div><a class="v" href="tel:+79780000000">+7 (978) 000-00-00</a></div>
+      <div class="soc"><a class="ul" href="#">Telegram</a><a class="ul" href="#">WhatsApp</a></div>
+    </div>
+  </nav>
 
   <!-- СЛАЙД 1: герой -->
   <section class="h1">
@@ -659,7 +706,7 @@ ul{list-style:none}
 
   <!-- СЛАЙД 3: услуги -->
   <section class="sec sec-2">
-    <h2 class="a">Услуги<br><em>и цены</em></h2>
+    <h2 class="a">Услуги<br class="dbr"> <em>и цены</em></h2>
     <p class="lead a" style="top:calc(230 * var(--u))">Работаем с&nbsp;автомобилями любого класса&nbsp;— от&nbsp;городского хэтчбека до&nbsp;внедорожника. Точную стоимость назовём после осмотра: она зависит от&nbsp;размера и&nbsp;состояния кузова.</p>
     <a class="cta solid sv-cta a" href="#" data-go="3"><span>Записаться</span><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 6h10M7 2l4 4-4 4"/></svg></a>
     <p class="sv-note a">Нажмите на&nbsp;услугу&nbsp;— она сразу отметится в&nbsp;форме записи.</p>
@@ -844,7 +891,7 @@ function heroOut() {
   capRows.forEach((r, i) => A(r, [{ transform: 'none' }, { transform: 'translateY(100%)' }], { delay: i * 20, duration: 260, easing: CIN }));
   A(vcard, [{ opacity: 1 }, { opacity: 0 }], { delay: 350, duration: 130 });
   const D = fg.getBoundingClientRect().bottom - wordBox.getBoundingClientRect().top + 8;
-  letters.forEach((l, i) => A(l, [{ transform: 'none', opacity: 1 }, { transform: `translateY(${D}px)`, opacity: 1 }], { delay: i * 65, duration: 450, easing: CIN }));
+  letters.forEach((l, i) => A(l, [{ transform: 'none', opacity: 1 }, { transform: `translateY(${D}px)`, opacity: 0 }], { delay: i * 65, duration: 450, easing: CIN }));
   A(moundL, [{ transform: 'none' }, { transform: 'translateX(-51%)' }], { delay: 20, duration: 560, easing: CIN });
   A(moundR, [{ transform: 'none' }, { transform: 'translateX(51%)' }], { delay: 150, duration: 450, easing: CIN });
 }
@@ -1108,51 +1155,6 @@ ba.addEventListener('keydown', e => {
   else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
 
-/* ---------- фон слайда «Услуги»: «жидкие» частицы (порт FluidParticlesBackground) ---------- */
-(() => {
-  const cv = $('.plate-sv .fluid'), ctx = cv.getContext('2d', { alpha: true });
-  const P = new Array(512), perm = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
-  for (let i = 0; i < 256; i++) P[256 + i] = P[i] = perm[i];
-  const fade = t => t * t * t * (t * (t * 6 - 15) + 10), lerp = (t, a, b) => a + t * (b - a);
-  const grad = (h, x, y, z) => { h &= 15; const u = h < 8 ? x : y, v = h < 4 ? y : h === 12 || h === 14 ? x : z; return ((h & 1) ? -u : u) + ((h & 2) ? -v : v); };
-  function noise3(x, y, z) {
-    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
-    x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-    const u = fade(x), v = fade(y), w = fade(z);
-    const A = P[X] + Y, AA = P[A] + Z, AB = P[A + 1] + Z, B = P[X + 1] + Y, BA = P[B] + Z, BB = P[B + 1] + Z;
-    return lerp(w, lerp(v, lerp(u, grad(P[AA], x, y, z), grad(P[BA], x - 1, y, z)), lerp(u, grad(P[AB], x, y - 1, z), grad(P[BB], x - 1, y - 1, z))),
-      lerp(v, lerp(u, grad(P[AA + 1], x, y, z - 1), grad(P[BA + 1], x - 1, y, z - 1)), lerp(u, grad(P[AB + 1], x, y - 1, z - 1), grad(P[BB + 1], x - 1, y - 1, z - 1))));
-  }
-  const NOISE = 0.003, SIZE = { min: .5, max: 2 }, BRIGHT = .15;   // как в компоненте: particleCount 2000 на Full HD
-  let parts = [];
-  function resize() {
-    cv.width = innerWidth; cv.height = innerHeight;
-    const n = Math.round(2000 * Math.min(1, (innerWidth * innerHeight) / (1920 * 1080)) + 300);
-    parts = Array.from({ length: n }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height,
-      size: Math.random() * (SIZE.max - SIZE.min) + SIZE.min, life: Math.random() * 100, maxLife: 100 + Math.random() * 50 }));
-    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, cv.width, cv.height);
-  }
-  function step() {
-    ctx.fillStyle = 'rgba(10,10,10,0.12)';            // полупрозрачная заливка — шлейфы
-    ctx.fillRect(0, 0, cv.width, cv.height);
-    const t = Date.now() * 0.0001;
-    for (const p of parts) {
-      if (++p.life > p.maxLife) { p.life = 0; p.x = Math.random() * cv.width; p.y = Math.random() * cv.height; }
-      const a = noise3(p.x * NOISE, p.y * NOISE, t) * Math.PI * 4;
-      p.x += Math.cos(a) * 2; p.y += Math.sin(a) * 2;
-      if (p.x < 0) p.x = cv.width; else if (p.x > cv.width) p.x = 0;
-      if (p.y < 0) p.y = cv.height; else if (p.y > cv.height) p.y = 0;
-      ctx.fillStyle = `rgba(255,255,255,${Math.sin(p.life / p.maxLife * Math.PI) * BRIGHT})`;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-    }
-  }
-  resize(); addEventListener('resize', resize);
-  if (RM) { for (let i = 0; i < 60; i++) step(); return; }   // без анимаций — один статичный кадр
-  // крутим только когда слайд «Услуги» на экране или к нему идёт переход
-  const loop = () => { if (state === 2 || stage.dataset.s === '2') step(); requestAnimationFrame(loop); };
-  requestAnimationFrame(loop);
-})();
-
 /* ---------- origin-fill для кнопок ---------- */
 function originFill(trigger, target = trigger) {
   const of = document.createElement('span'); of.className = 'of'; of.setAttribute('aria-hidden', 'true');
@@ -1173,19 +1175,32 @@ $$('.cta, .ba-x, .ba-pp').forEach(b => originFill(b));
 $$('.arrow').forEach(a => originFill(a, $('.c', a)));
 $$('.svc').forEach(c => originFill(c, $('.go', c)));
 
+/* ---------- меню ---------- */
+const menuBtn = $('.menu'), mnav = $('#mnav');
+let menuOpen = false;
+function setMenu(on) {
+  menuOpen = on;
+  stage.classList.toggle('menu-open', on);
+  menuBtn.setAttribute('aria-expanded', on);
+  mnav.setAttribute('aria-hidden', !on);
+  $$('.mnav-links a').forEach(a => a.classList.toggle('on', +a.dataset.go === state));
+}
+menuBtn.addEventListener('click', () => setMenu(!menuOpen));
+
 /* ---------- ввод ---------- */
 const inForm = t => t && t.closest && t.closest('input, select, textarea, label.chip');
-addEventListener('wheel', e => { e.preventDefault(); if (baOpen) return; if (Math.abs(e.deltaY) > 4) goTo(state + (e.deltaY > 0 ? 1 : -1)); }, { passive: false });
+addEventListener('wheel', e => { e.preventDefault(); if (baOpen || menuOpen) return; if (Math.abs(e.deltaY) > 4) goTo(state + (e.deltaY > 0 ? 1 : -1)); }, { passive: false });
 let ty = null;
 addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
 addEventListener('touchmove', e => { if (!inForm(e.target)) e.preventDefault(); }, { passive: false });
 addEventListener('touchend', e => {
   if (ty == null) return; const dy = ty - e.changedTouches[0].clientY; ty = null;
-  if (baOpen) return;
+  if (baOpen || menuOpen) return;
   if (Math.abs(dy) > 30) goTo(state + (dy > 0 ? 1 : -1));
 });
 addEventListener('keydown', e => {
   if (baOpen) { if (e.key === 'Escape') closeBA(); return; }
+  if (menuOpen) { if (e.key === 'Escape') setMenu(false); return; }
   if (inForm(e.target)) return;
   if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); goTo(state + 1); }
   if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(state - 1); }
@@ -1194,6 +1209,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-go],[data-book],[data-ba]');
   if (!t) { if (e.target.closest('a[href="#"]')) e.preventDefault(); return; }
   e.preventDefault();
+  if (menuOpen) setMenu(false);
   if (t.dataset.ba) openBA(t.dataset.ba, t);
   else if (t.dataset.book && baOpen) closeBA(() => goTo(3, { book: t.dataset.book }));
   else if (t.dataset.book) goTo(3, { book: t.dataset.book });
