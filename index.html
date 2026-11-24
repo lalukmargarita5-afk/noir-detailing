@@ -1092,7 +1092,12 @@ let started = false;
 function start() {
   if (started) return; started = true;
   fitWord();
-  if (RM) { stage.classList.add('rm'); stage.classList.remove('pre'); lock = false; return; }
+  if (RM) {
+    stage.classList.add('rm'); stage.classList.remove('pre'); lock = false;
+    const g = +qs.get('go'); if (g) goTo(g);
+    if (qs.get('ba') && BA[qs.get('ba')]) openBA(qs.get('ba'));
+    return;
+  }
   let go0 = false;
   const begin = () => {
     if (go0) return; go0 = true;
