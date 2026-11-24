@@ -5,11 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NOIR — детейлинг-центр в Симферополе</title>
 <meta name="description" content="Детейлинг-центр в Симферополе: мойка, полировка, керамика, антигравийная плёнка, химчистка салона и тонировка. Онлайн-запись.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://images.unsplash.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300..700&family=Onest:wght@400..600&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/hero.jpg" as="image">
 <style>
+/* ============ ШРИФТЫ (локально: Google Fonts недоступен в Крыму) ============ */
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(assets/fonts/onest-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(assets/fonts/onest-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(assets/fonts/onest-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(assets/fonts/onest-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(assets/fonts/unbounded-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(assets/fonts/unbounded-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(assets/fonts/unbounded-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(assets/fonts/unbounded-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ============ ТОКЕНЫ ============ */
 :root{
   --deep:#0a0a0a; --dark:#151515; --mid:#8a8a8a; --soft:#c9c9c7; --light:#f1f1ef;
@@ -146,7 +210,7 @@ ul{list-style:none}
 .h1 p b{font-weight:600;color:var(--light)}
 .vcard{position:absolute;left:calc(92 * var(--u));top:calc(206 * var(--u));width:calc(164 * var(--u));height:calc(114 * var(--u));
   border:1px solid rgba(241,241,239,.18);background:var(--dark);overflow:hidden;display:grid;place-items:center}
-.vcard .ph{position:absolute;inset:0;background:url("https://images.unsplash.com/photo-1532268116505-8c59cc37d2e6?auto=format&fit=crop&w=520&h=360&q=75") center/cover;
+.vcard .ph{position:absolute;inset:0;background:url("assets/img/works.jpg") center/cover;
   filter:grayscale(1) contrast(1.1);transition:transform 1s var(--ease-out),filter .6s}
 .vcard::after{content:"";position:absolute;inset:0;background:rgba(10,10,10,.28);transition:background .5s}
 .vcard .play{position:relative;z-index:1;display:grid;place-items:center;width:max(30px,calc(46 * var(--u)));aspect-ratio:1;border-radius:50%;
@@ -487,11 +551,11 @@ ul{list-style:none}
   <!-- фоны -->
   <div class="plate plate-h1"><div class="zoom">
     <img id="heroImg" alt="" fetchpriority="high" decoding="async"
-      src="https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&w=2400&q=80">
+      src="assets/img/hero.jpg">
   </div></div>
-  <div class="plate plate-s2"><img alt="" decoding="async" src="https://images.unsplash.com/photo-1719467292463-9a9a3490d69e?auto=format&fit=crop&w=2400&q=80"></div>
+  <div class="plate plate-s2"><img alt="" decoding="async" src="assets/img/studio.jpg"></div>
   <div class="plate plate-sv"><canvas class="fluid" aria-hidden="true"></canvas></div>
-  <div class="plate plate-bk"><img alt="" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1626621394541-b9a48e35a95d?auto=format&fit=crop&w=2200&q=78"></div>
+  <div class="plate plate-bk"><img alt="" decoding="async" loading="lazy" src="assets/img/booking.jpg"></div>
   <!-- слот видео облёта камеры (герой ↔ слайд 2), работает с ?cam=URL -->
   <canvas class="cam" width="1280" height="720"></canvas>
   <div class="shade"></div>
@@ -584,11 +648,11 @@ ul{list-style:none}
     <p class="lead a">Мы трепетно относимся к&nbsp;каждому автомобилю и&nbsp;выдаём максимальное качество&nbsp;— это видно в&nbsp;каждой нашей работе. Будем рады, если и&nbsp;ваш автомобиль окажется в&nbsp;галерее нашего детейлинг-центра.</p>
     <a class="arrow a" href="#" data-go="2"><span class="c"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 23 23 3M8 3h15v15"/></svg></span>Все услуги и цены</a>
     <div class="cards">
-      <a class="card a" href="#" data-ba="ppf"><span class="im" style="background-image:url('https://images.unsplash.com/photo-1666195782998-5189c6a40793?auto=format&fit=crop&w=640&h=730&q=75')"></span>
+      <a class="card a" href="#" data-ba="ppf"><span class="im" style="background-image:url('assets/img/card-ppf.jpg')"></span>
         <span class="meta"><span class="row"><span class="lb">Защита PPF</span><span class="tg"></span></span><span class="sub">Оклейка полиуретановой плёнкой, бронирование зон риска</span><span class="more"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4c0 .5.5.8.9.5l6.6-4.2c.4-.2.4-.8 0-1L3.9 1.3c-.4-.3-.9 0-.9.5Z"/></svg>Смотреть видео</span></span></a>
-      <a class="card a" href="#" data-ba="ceramic"><span class="im" style="background-image:url('https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=640&h=730&q=75')"></span>
+      <a class="card a" href="#" data-ba="ceramic"><span class="im" style="background-image:url('assets/img/card-ceramic.jpg')"></span>
         <span class="meta"><span class="row"><span class="lb">Керамика</span><span class="tg"></span></span><span class="sub">Керамическое покрытие и&nbsp;восстановительная полировка</span><span class="more"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4c0 .5.5.8.9.5l6.6-4.2c.4-.2.4-.8 0-1L3.9 1.3c-.4-.3-.9 0-.9.5Z"/></svg>Смотреть видео</span></span></a>
-      <a class="card a" href="#" data-ba="interior"><span class="im" style="background-image:url('https://images.unsplash.com/photo-1780296269553-84ec2dd53065?auto=format&fit=crop&w=640&h=730&q=75')"></span>
+      <a class="card a" href="#" data-ba="interior"><span class="im" style="background-image:url('assets/img/card-interior.jpg')"></span>
         <span class="meta"><span class="row"><span class="lb">Химчистка</span><span class="tg"></span></span><span class="sub">Химчистка и&nbsp;озонирование салона, уход за&nbsp;кожей</span><span class="more"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4c0 .5.5.8.9.5l6.6-4.2c.4-.2.4-.8 0-1L3.9 1.3c-.4-.3-.9 0-.9.5Z"/></svg>Смотреть видео</span></span></a>
     </div>
   </section>
@@ -729,7 +793,7 @@ const capRows = $$('.cap .mi');
 /* элементы слайдов 2–4 с задержками (мс) для «въезда» */
 const SEC = {
   1: () => { const c = $$('.sec-1 .card'); return [[$('.sec-1 h2'), 0], [$('.sec-1 .lead'), 100], [$('.sec-1 .arrow'), 100], [c[0], 0], [c[1], 150], [c[2], 300]]; },
-  2: () => [[$('.sec-2 h2'), 0], [$('.sec-2 .lead'), 80], [$('.sv-cta'), 140], [$('.sv-note'), 180], ...$$('.svc').map((el, i) => [el, 40 + (i % 3) * 70 + Math.floor(i / 3) * 110])],
+  2: () => [[$('.sec-2 h2'), 0], [$('.sec-2 .lead'), 80], [$('.sv-cta'), 140], [$('.sv-note'), 180], ...$$('.svc').map((el, i) => [el, 40 + i * 45])],
   3: () => [[$('.sec-3 h2'), 0], [$('.sec-3 .lead'), 80], [$('.bk-contacts'), 160], [$('#bookForm'), 60]]
 };
 
@@ -787,13 +851,15 @@ function heroOut() {
 
 /* кривая «плавного скролла»: ровное скольжение, затем экспоненциальная посадка.
    map(f) переводит оставшуюся долю пути f (1→0) в смещение в высотах экрана. */
-function curve(map) {
+function curve(map, kind) {
   const kf = [], H = innerHeight;
   for (let k = 0; k <= 54; k++) {
     const t = k / 54 * 1.8;
     let f = t < 0.47 ? 1 - 1.506 * t : 0.293 * Math.exp(-(t - 0.47) / 0.232);
     if (k === 54) f = 0;
-    kf.push({ offset: k / 54, transform: `translateY(${(map(f) * H).toFixed(2)}px)`, opacity: 1 });
+    // уходящий слайд быстро гаснет, приходящий проявляется — слайды не налезают друг на друга
+    const op = kind === 'out' ? Math.max(0, Math.min(1, (f - .55) / .45)) : kind === 'in' ? Math.max(0, Math.min(1, (1 - f) / .55)) : 1;
+    kf.push({ offset: k / 54, transform: `translateY(${(map(f) * H).toFixed(2)}px)`, opacity: +op.toFixed(3) });
   }
   return kf;
 }
@@ -899,10 +965,10 @@ function goTo(to, opt = {}) {
   const dir = to > from ? 1 : -1;
   // уходящий слайд
   if (from === 0) heroOut();
-  else secMove(from, curve(dir > 0 ? OUT_TOP : OUT_BOTTOM), 0, dir < 0);
+  else secMove(from, curve(dir > 0 ? OUT_TOP : OUT_BOTTOM, 'out'), 0, dir < 0);
   // приходящий слайд
   if (to === 0) { stage.dataset.s = '0'; intro(800, false); }
-  else secMove(to, curve(dir > 0 ? IN_BELOW : IN_TOP), from === 0 ? 180 : 120, dir < 0);
+  else secMove(to, curve(dir > 0 ? IN_BELOW : IN_TOP, 'in'), from === 0 ? 180 : 120, dir < 0);
   // фон
   if ((from === 0 && to === 1) || (from === 1 && to === 0)) runCamera(to === 1, to === 1 ? 550 : 200, 1700);
   else crossPlates(from, to, dir);
@@ -1151,7 +1217,13 @@ function start() {
     if (go0) return; go0 = true;
     intro(0, true);
     stage.classList.remove('pre');
-    setTimeout(() => { lock = false; const g = +qs.get('go'); if (g) goTo(g); }, 1450);   // ?go=N — сразу открыть слайд N (для проверки)
+    setTimeout(() => {
+      lock = false;
+      // пункты меню после въезда возвращаем к чистому CSS (в Safari залипала первая ссылка)
+      navLinks.forEach(l => { l.getAnimations().forEach(a => { try { a.finish(); } catch (e) {} a.cancel(); }); l.style.transform = ''; l.style.opacity = ''; });
+      running = running.filter(a => !navLinks.includes(a.effect && a.effect.target));
+      const g = +qs.get('go'); if (g) goTo(g);
+    }, 1450);   // ?go=N — сразу открыть слайд N (для проверки)
   };
   requestAnimationFrame(() => requestAnimationFrame(begin));
   setTimeout(begin, 400);
