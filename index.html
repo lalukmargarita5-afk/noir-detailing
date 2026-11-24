@@ -56,6 +56,9 @@ ul{list-style:none}
   mask-image:linear-gradient(90deg,transparent 0,#000 24%,#000 94%,transparent 100%),linear-gradient(180deg,transparent 0,#000 8%,#000 72%,transparent 100%);
   mask-composite:intersect;
 }
+.plate-sv .fluid{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.8}
+.plate-sv::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 72% 0%,rgba(255,255,255,.07),rgba(255,255,255,0) 70%),linear-gradient(90deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,0) 40%)}
 .plate-sv{background:radial-gradient(ellipse 70% 60% at 72% 0%,rgba(255,255,255,.09),rgba(255,255,255,0) 70%),radial-gradient(ellipse 50% 40% at 0% 100%,rgba(255,255,255,.05),rgba(255,255,255,0) 70%),#0a0a0a}
 .plate-bk{background:#050505}
 .plate-bk img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;filter:grayscale(1) contrast(1.1) brightness(.75)}
@@ -487,7 +490,7 @@ ul{list-style:none}
       src="https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&w=2400&q=80">
   </div></div>
   <div class="plate plate-s2"><img alt="" decoding="async" src="https://images.unsplash.com/photo-1719467292463-9a9a3490d69e?auto=format&fit=crop&w=2400&q=80"></div>
-  <div class="plate plate-sv"></div>
+  <div class="plate plate-sv"><canvas class="fluid" aria-hidden="true"></canvas></div>
   <div class="plate plate-bk"><img alt="" decoding="async" loading="lazy" src="https://images.unsplash.com/photo-1626621394541-b9a48e35a95d?auto=format&fit=crop&w=2200&q=78"></div>
   <!-- слот видео облёта камеры (герой ↔ слайд 2), работает с ?cam=URL -->
   <canvas class="cam" width="1280" height="720"></canvas>
@@ -1038,6 +1041,51 @@ ba.addEventListener('keydown', e => {
   if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
   else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
 });
+
+/* ---------- фон слайда «Услуги»: «жидкие» частицы (порт FluidParticlesBackground) ---------- */
+(() => {
+  const cv = $('.plate-sv .fluid'), ctx = cv.getContext('2d', { alpha: true });
+  const P = new Array(512), perm = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
+  for (let i = 0; i < 256; i++) P[256 + i] = P[i] = perm[i];
+  const fade = t => t * t * t * (t * (t * 6 - 15) + 10), lerp = (t, a, b) => a + t * (b - a);
+  const grad = (h, x, y, z) => { h &= 15; const u = h < 8 ? x : y, v = h < 4 ? y : h === 12 || h === 14 ? x : z; return ((h & 1) ? -u : u) + ((h & 2) ? -v : v); };
+  function noise3(x, y, z) {
+    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
+    x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+    const u = fade(x), v = fade(y), w = fade(z);
+    const A = P[X] + Y, AA = P[A] + Z, AB = P[A + 1] + Z, B = P[X + 1] + Y, BA = P[B] + Z, BB = P[B + 1] + Z;
+    return lerp(w, lerp(v, lerp(u, grad(P[AA], x, y, z), grad(P[BA], x - 1, y, z)), lerp(u, grad(P[AB], x, y - 1, z), grad(P[BB], x - 1, y - 1, z))),
+      lerp(v, lerp(u, grad(P[AA + 1], x, y, z - 1), grad(P[BA + 1], x - 1, y, z - 1)), lerp(u, grad(P[AB + 1], x, y - 1, z - 1), grad(P[BB + 1], x - 1, y - 1, z - 1))));
+  }
+  const NOISE = 0.003, SIZE = { min: .5, max: 2 }, BRIGHT = .15;   // как в компоненте: particleCount 2000 на Full HD
+  let parts = [];
+  function resize() {
+    cv.width = innerWidth; cv.height = innerHeight;
+    const n = Math.round(2000 * Math.min(1, (innerWidth * innerHeight) / (1920 * 1080)) + 300);
+    parts = Array.from({ length: n }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height,
+      size: Math.random() * (SIZE.max - SIZE.min) + SIZE.min, life: Math.random() * 100, maxLife: 100 + Math.random() * 50 }));
+    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, cv.width, cv.height);
+  }
+  function step() {
+    ctx.fillStyle = 'rgba(10,10,10,0.12)';            // полупрозрачная заливка — шлейфы
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    const t = Date.now() * 0.0001;
+    for (const p of parts) {
+      if (++p.life > p.maxLife) { p.life = 0; p.x = Math.random() * cv.width; p.y = Math.random() * cv.height; }
+      const a = noise3(p.x * NOISE, p.y * NOISE, t) * Math.PI * 4;
+      p.x += Math.cos(a) * 2; p.y += Math.sin(a) * 2;
+      if (p.x < 0) p.x = cv.width; else if (p.x > cv.width) p.x = 0;
+      if (p.y < 0) p.y = cv.height; else if (p.y > cv.height) p.y = 0;
+      ctx.fillStyle = `rgba(255,255,255,${Math.sin(p.life / p.maxLife * Math.PI) * BRIGHT})`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  resize(); addEventListener('resize', resize);
+  if (RM) { for (let i = 0; i < 60; i++) step(); return; }   // без анимаций — один статичный кадр
+  // крутим только когда слайд «Услуги» на экране или к нему идёт переход
+  const loop = () => { if (state === 2 || stage.dataset.s === '2') step(); requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+})();
 
 /* ---------- origin-fill для кнопок ---------- */
 function originFill(trigger, target = trigger) {
