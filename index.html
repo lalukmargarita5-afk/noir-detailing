@@ -428,6 +428,48 @@ ul{list-style:none}
   .ba-view{left:34vw;right:70px;top:18px;bottom:18px}
 }
 
+/* ============ КАЛЕНДАРЬ (диапазон дат) ============ */
+.fd{position:relative}
+.dbtn{width:100%;height:max(36px,calc(40 * var(--u)));display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;cursor:pointer;
+  border-bottom:1px solid rgba(241,241,239,.25);font-size:max(14px,calc(15 * var(--u)));outline:none}
+.dbtn em{font-style:normal;color:rgba(241,241,239,.28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dbtn.has em{color:var(--light)}
+.dbtn svg{flex:none;width:18px;opacity:.75;transition:opacity .3s,transform .5s var(--ease-out)}
+.dbtn:hover svg,.dbtn[aria-expanded="true"] svg{opacity:1;transform:scale(1.1)}
+.cal-back{position:fixed;inset:0;z-index:24;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.cal-back[hidden],.cal[hidden]{display:none}
+.cal{position:fixed;z-index:25;width:316px;padding:14px;border-radius:16px;background:#141414;border:1px solid rgba(241,241,239,.14);
+  box-shadow:0 30px 80px rgba(0,0,0,.65);font-family:var(--font-b);color:var(--light);animation:calIn .35s var(--ease-out)}
+@keyframes calIn{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.cal-h{display:flex;align-items:center;justify-content:space-between;padding:0 2px 12px}
+.cal-h b{font-weight:500;font-size:14px;letter-spacing:.02em}
+.cal-nav{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid rgba(241,241,239,.16);opacity:.75;transition:opacity .25s,background .25s}
+.cal-nav svg{width:16px}
+.cal-nav:hover{opacity:1;background:rgba(241,241,239,.08)}
+.cal-nav:disabled{opacity:.2;pointer-events:none}
+.cal-w{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;text-align:center;font-size:12px;color:rgba(241,241,239,.45)}
+.cal-w span{padding:4px 0}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);row-gap:4px}
+.cd{position:relative;height:38px;display:grid;place-items:center}
+.cd button{position:relative;z-index:1;width:36px;height:36px;border-radius:10px;font-size:13px;color:var(--light);font-variant-numeric:tabular-nums;
+  transition:background .2s,color .2s,border-radius .2s}
+.cd button:hover{background:rgba(241,241,239,.12);border-radius:999px}
+.cd.out button{color:rgba(241,241,239,.3)}
+.cd.today button{background:rgba(241,241,239,.1);border-radius:999px}
+.cd.mid{background:rgba(241,241,239,.12)}
+.cd.mid button{border-radius:0;background:transparent}
+.cd.band.start{background:rgba(241,241,239,.12);border-radius:999px 0 0 999px}
+.cd.band.end{background:rgba(241,241,239,.12);border-radius:0 999px 999px 0}
+.cd.start button,.cd.end button{background:var(--light);color:#0a0a0a;border-radius:999px;font-weight:600}
+.cd.dis button{opacity:.22;pointer-events:none}
+.cal-f{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(241,241,239,.1)}
+.cal-sel{font-size:12.5px;color:rgba(241,241,239,.7)}
+.cal-btns{display:flex;justify-content:space-between;align-items:center}
+.cal-reset{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(241,241,239,.55);padding:6px 0;transition:color .25s}
+.cal-reset:hover{color:var(--light)}
+.cal-ok{height:34px;padding:0 18px;border-radius:999px;background:var(--light);color:#0a0a0a;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;transition:transform .2s}
+.cal-ok:active{transform:scale(.97)}
+
 /* ============ СОСТОЯНИЯ ============ */
 .pre .nav>*,.pre .nav-links .nl,.pre .glyphs,.pre .pager,.pre .h1,.pre .fg{opacity:0}
 .pre .plate-h1 .zoom{transform:scale(1.3)}
@@ -658,6 +700,20 @@ ul{list-style:none}
     <button data-go="3" aria-label="Запись">04</button>
   </div>
 
+  <!-- календарь выбора дат -->
+  <div class="cal-back" id="calBack" hidden></div>
+  <div class="cal" id="cal" role="dialog" aria-label="Выбор удобных дат" hidden>
+    <div class="cal-h">
+      <button type="button" class="cal-nav" data-m="-1" aria-label="Предыдущий месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <b id="calTitle"></b>
+      <button type="button" class="cal-nav" data-m="1" aria-label="Следующий месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div class="cal-w"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+    <div class="cal-g" id="calGrid"></div>
+    <div class="cal-f"><span class="cal-sel" id="calSel">Выберите начало и конец</span>
+      <span class="cal-btns"><button type="button" class="cal-reset" id="calReset">Сбросить</button><button type="button" class="cal-ok" id="calOk">Готово</button></span></div>
+  </div>
+
   <!-- полноэкранное меню (бургер) -->
   <nav class="mnav" id="mnav" aria-label="Меню" aria-hidden="true">
     <ul class="mnav-links">
@@ -730,7 +786,7 @@ ul{list-style:none}
           <label class="f"><span>Имя</span><input name="name" autocomplete="given-name" placeholder="Как к вам обращаться" required></label>
           <label class="f"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required></label>
           <label class="f"><span>Автомобиль</span><input name="car" placeholder="Марка и модель"></label>
-          <label class="f"><span>Удобная дата</span><input name="date" type="date"></label>
+          <div class="f fd"><span>Удобные даты</span><button type="button" class="dbtn" id="dateBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="cal"><em id="dateTxt">Выберите даты</em><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 3v3M16 3v3"/></svg></button><input type="hidden" name="date"></div>
         </div>
         <div class="sum">
           <span class="tot" id="tot">Выберите одну или несколько услуг</span>
@@ -1186,6 +1242,85 @@ $$('.cta, .ba-x, .ba-pp').forEach(b => originFill(b));
 $$('.arrow').forEach(a => originFill(a, $('.c', a)));
 $$('.svc').forEach(c => originFill(c, $('.go', c)));
 
+/* ---------- календарь: диапазон дат (порт react-day-picker mode="range") ---------- */
+const cal = $('#cal'), calBack = $('#calBack'), dateBtn = $('#dateBtn'), dateTxt = $('#dateTxt'), calGrid = $('#calGrid');
+const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+const MSHORT = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+let calOpen = false, calView = null, rFrom = null, rTo = null, rHover = null;
+const day0 = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const sameDay = (a, b) => a && b && a.getTime() === b.getTime();
+const fmtDay = d => `${d.getDate()} ${MSHORT[d.getMonth()]}`;
+const isMobile = () => matchMedia('(max-width:820px), (max-aspect-ratio:1/1)').matches;
+function drawCal() {
+  const y = calView.getFullYear(), m = calView.getMonth(), t0 = day0(new Date());
+  $('#calTitle').textContent = `${MONTHS[m]} ${y}`;
+  $('.cal-nav[data-m="-1"]').disabled = y < t0.getFullYear() || (y === t0.getFullYear() && m <= t0.getMonth());
+  const first = new Date(y, m, 1), start = new Date(y, m, 1 - (first.getDay() + 6) % 7);
+  const end = rTo || (rFrom && rHover && rHover > rFrom ? rHover : null);
+  let html = '';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const c = ['cd'], s = rFrom && sameDay(d, rFrom), e = end && sameDay(d, end);
+    if (d.getMonth() !== m) c.push('out');
+    if (sameDay(d, t0)) c.push('today');
+    if (d < t0) c.push('dis');
+    if (s) c.push('start'); if (e) c.push('end');
+    if (rFrom && end && d > rFrom && d < end) c.push('mid');
+    if ((s || e) && rFrom && end && !sameDay(rFrom, end)) c.push('band');
+    html += `<div class="${c.join(' ')}"><button type="button" data-d="${d.getTime()}"${d < t0 ? ' disabled tabindex="-1"' : ''} aria-label="${d.getDate()} ${MSHORT[d.getMonth()]} ${d.getFullYear()}"${s || e ? ' aria-pressed="true"' : ''}>${d.getDate()}</button></div>`;
+  }
+  calGrid.innerHTML = html;
+  $('#calSel').textContent = !rFrom ? 'Выберите начало и конец' : !rTo ? `С ${fmtDay(rFrom)} — выберите конец` : sameDay(rFrom, rTo) ? fmtDay(rFrom) : `${fmtDay(rFrom)} — ${fmtDay(rTo)}`;
+}
+function syncDateField() {
+  const v = !rFrom ? '' : !rTo || sameDay(rFrom, rTo) ? fmtDay(rFrom) : `${fmtDay(rFrom)} — ${fmtDay(rTo)}`;
+  dateTxt.textContent = v || 'Выберите даты';
+  dateBtn.classList.toggle('has', !!v);
+  form.elements.date.value = v;
+}
+function placeCal() {
+  if (isMobile()) { Object.assign(cal.style, { left: '50%', top: '50%', transform: 'translate(-50%,-50%)' }); return; }
+  const r = dateBtn.getBoundingClientRect(), h = cal.offsetHeight || 400, w = cal.offsetWidth || 316;
+  const up = r.top - h - 12 > 8, top = up ? r.top - h - 12 : Math.min(innerHeight - h - 8, r.bottom + 12);
+  Object.assign(cal.style, { left: Math.min(innerWidth - w - 8, Math.max(8, r.left)) + 'px', top: top + 'px', transform: 'none' });
+}
+function openCal() {
+  calOpen = true;
+  const base = rFrom || day0(new Date()); calView = new Date(base.getFullYear(), base.getMonth(), 1);
+  drawCal(); cal.hidden = false; calBack.hidden = !isMobile(); placeCal();
+  dateBtn.setAttribute('aria-expanded', 'true');
+  const f = $('.cd.start button', cal) || $('.cd.today button', cal) || $('.cd:not(.dis) button', cal); if (f) f.focus({ preventScroll: true });
+}
+function closeCal(focusBack = true) {
+  if (!calOpen) return;
+  calOpen = false; cal.hidden = true; calBack.hidden = true; rHover = null;
+  dateBtn.setAttribute('aria-expanded', 'false'); if (focusBack) dateBtn.focus({ preventScroll: true });
+}
+dateBtn.addEventListener('click', () => calOpen ? closeCal() : openCal());
+calBack.addEventListener('click', () => closeCal());
+$('#calOk').addEventListener('click', () => closeCal());
+$('#calReset').addEventListener('click', () => { rFrom = rTo = rHover = null; syncDateField(); drawCal(); });
+$$('.cal-nav').forEach(b => b.addEventListener('click', () => { calView = new Date(calView.getFullYear(), calView.getMonth() + +b.dataset.m, 1); drawCal(); }));
+calGrid.addEventListener('click', e => {
+  const b = e.target.closest('button[data-d]'); if (!b) return;
+  const d = new Date(+b.dataset.d);
+  if (!rFrom || rTo) { rFrom = d; rTo = null; }
+  else if (d < rFrom) { rTo = rFrom; rFrom = d; }
+  else rTo = d;
+  if (d.getMonth() !== calView.getMonth()) calView = new Date(d.getFullYear(), d.getMonth(), 1);
+  syncDateField(); drawCal();
+  const again = calGrid.querySelector(`button[data-d="${d.getTime()}"]`); if (again) again.focus({ preventScroll: true });
+});
+calGrid.addEventListener('mouseover', e => {
+  if (!rFrom || rTo) return;
+  const b = e.target.closest('button[data-d]'); if (!b) return;
+  const d = new Date(+b.dataset.d); if (sameDay(d, rHover)) return;
+  rHover = d; drawCal();
+});
+calGrid.addEventListener('mouseleave', () => { if (rHover) { rHover = null; drawCal(); } });
+document.addEventListener('pointerdown', e => { if (calOpen && !isMobile() && !e.target.closest('#cal') && !e.target.closest('#dateBtn')) closeCal(false); });
+addEventListener('resize', () => { if (calOpen) placeCal(); });
+
 /* ---------- меню ---------- */
 const menuBtn = $('.menu'), mnav = $('#mnav');
 let menuOpen = false;
@@ -1200,18 +1335,19 @@ menuBtn.addEventListener('click', () => setMenu(!menuOpen));
 
 /* ---------- ввод ---------- */
 const inForm = t => t && t.closest && t.closest('input, select, textarea, label.chip');
-addEventListener('wheel', e => { e.preventDefault(); if (baOpen || menuOpen) return; if (Math.abs(e.deltaY) > 4) goTo(state + (e.deltaY > 0 ? 1 : -1)); }, { passive: false });
+addEventListener('wheel', e => { e.preventDefault(); if (baOpen || menuOpen || calOpen) return; if (Math.abs(e.deltaY) > 4) goTo(state + (e.deltaY > 0 ? 1 : -1)); }, { passive: false });
 let ty = null;
 addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
 addEventListener('touchmove', e => { if (!inForm(e.target)) e.preventDefault(); }, { passive: false });
 addEventListener('touchend', e => {
   if (ty == null) return; const dy = ty - e.changedTouches[0].clientY; ty = null;
-  if (baOpen || menuOpen) return;
+  if (baOpen || menuOpen || calOpen) return;
   if (Math.abs(dy) > 30) goTo(state + (dy > 0 ? 1 : -1));
 });
 addEventListener('keydown', e => {
   if (baOpen) { if (e.key === 'Escape') closeBA(); return; }
   if (menuOpen) { if (e.key === 'Escape') setMenu(false); return; }
+  if (calOpen) { if (e.key === 'Escape') closeCal(); return; }
   if (inForm(e.target)) return;
   if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); goTo(state + 1); }
   if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(state - 1); }
